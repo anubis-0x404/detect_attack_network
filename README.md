@@ -1,4 +1,4 @@
-#🛡️ Mini SIEM — Hệ thống Giám sát và Phát hiện Tấn công Mạng
+🛡️ Mini SIEM — Hệ thống Giám sát và Phát hiện Tấn công Mạng
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)
 ![Elasticsearch](https://img.shields.io/badge/Elasticsearch-8.x-005571?logo=elasticsearch)
@@ -8,40 +8,15 @@
 
 ---
 
-#Mô tả
+Mô tả
 
 Hệ thống **Mini SIEM** (Security Information and Event Management) được xây dựng nhằm giám sát và phát hiện các hành vi tấn công mạng thông qua phân tích log theo thời gian thực. Hệ thống tích hợp **Suricata IDS**, **ELK Stack** và **Detection Engine tự xây dựng bằng Python**, áp dụng hai kỹ thuật phát hiện chính:
 
 - **Rule-based Detection** — phát hiện tấn công đơn sự kiện theo ngưỡng (threshold + time window)
 - **Event Correlation** — phát hiện tấn công có chủ đích đa bước (multi-step attack chain)
 
----
 
-#Kiến trúc hệ thống
-┌─────────────┐    TCP/514    ┌──────────────────────────────────┐
-│  Victim Host│ ────────────▶ │         SIEM Server              │
-│ (Ubuntu)    │               │                                  │
-│             │               │  ┌─────────┐    ┌─────────────┐  │
-│ • Suricata  │               │  │ Parser  │───▶│Elasticsearch│  │
-│ • Rsyslog   │               │  │Normalizer    └──────┬──────┘  │
-│   Forwarder │               │  └─────────┘           │         │
-└─────────────┘               │                        ▼         │
-│  ┌──────────────────────────┐   _________________________
-┌─────────────┐               │  │    Detection Engine      │    │
-│  Kali Linux │               │  │  • Rule-based            │    │
-│ (Attacker)  │               │  │  • Correlation           │    │
-│             │               │  └──────────┬───────────────┘    │
-│ • Nmap      │               │             │                    │
-│ • Hydra     │               │  ┌──────────▼───────────────┐    │
-└─────────────┘               │  │  Alert & Dashboard       │    │
-│  │  • Kibana                │  │                          |    |
-│  │  • Telegram Bot          │  │                          |    |
-│  └──────────────────────────┘  │__________________________|    |
-└-----------------------------------------------------------------
-
----
-
-#Hướng dẫn cài đặt
+Hướng dẫn cài đặt
 
 #Yêu cầu môi trường
 
@@ -100,10 +75,11 @@ cp .env.example .env
 nano .env
 ```
 Điền thông tin:
+```bash
 ES_HOST=http://localhost:9200
 TELEGRAM_BOT_TOKEN=your_bot_token_here
 TELEGRAM_CHAT_ID=your_chat_id_here
-
+```
 #Bước 5 — Cài đặt Suricata trên Victim Host
 
 ```bash
@@ -113,6 +89,7 @@ sudo systemctl enable suricata
 sudo systemctl start suricata
 ```
 #Bước 6 — Cấu hình Rsyslog
+
 Trên Victim Host (/etc/rsyslog.d/60-forward-siem.conf):
 ```bash
 module(load="imfile")
@@ -157,6 +134,7 @@ python3 main.py
 ```
 
 #Giao diện điều khiển
+```bash
 _____ _____ _____ __  __             
   / ____|_   _|  ___|  \/  |      (_)    (_)
  | (___   | | | |__ | \  / |      
@@ -177,6 +155,8 @@ _____ _____ _____ __  __
 [8] Test gui canh bao Telegram
 [9] Mo Kibana Dashboard
 [0] Thoat
-
+```
+```bash
 Kibana Dashboard: http://<SIEM_SERVER_IP>:5601
 Dashboard: SIEM — Overview
+```
