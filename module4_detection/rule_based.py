@@ -101,7 +101,6 @@ def check_brute_force(es: Elasticsearch, src_ip: str) -> dict | None:
 
 # Rule 2: Port Scan
 def check_port_scan(es: Elasticsearch, src_ip: str) -> dict | None:
-     # ① Cooldown check
     if _is_in_cooldown("Port Scan", src_ip):
         return None
 
@@ -109,53 +108,54 @@ def check_port_scan(es: Elasticsearch, src_ip: str) -> dict | None:
         "query": {
             "bool": {
                 "must": [
-                    {"term":  {"source.ip": src_ip}},
-                    {"range": {"@timestamp": {
-                        "gte": f"now-{PORT_SCAN_WINDOW}s"
-                    }}},
-                ]
+                    {"term": {"source.ip": src_ip}},
+                    {"term": {"event.type": "suricata_alert"}},
+                    {
+                        "range": {
+                            "@timestamp": {
+                                "gte": f"now-{PORT_SCAN_WINDOW}s"
+                            }
+                        }
+                    },
+                ],
+                "should": [
+                    {"wildcard": {"rule.name": "*SCAN*"}},
+                    {"wildcard": {"rule.name": "*scan*"}},
+                    {"wildcard": {"rule.name": "*Nmap*"}},
+                ],
+                "minimum_should_match": 1,
             }
-        },
-        "aggs": {
-            "unique_ports": {
-                "cardinality": {        
-                    "field": "destination.port"
-                }
-            }
-        },
-        "size": 0   
+        }
     }
 
     try:
-        response = es.search(
+        count = es.count(
             index=f"{ES_INDEX_PREFIX}-*",
             body=query
-        )
-        unique_port_count = (
-            response["aggregations"]["unique_ports"]["value"]
-        )
+        )["count"]
 
-        if unique_port_count >= PORT_SCAN_THRESHOLD:
-            _set_cooldown("Port Scan", src_ip)   # Đánh dấu cooldown
+        if count > 0:
+            _set_cooldown("Port Scan", src_ip)
             return create_alert(
-                alert_type  = "Port Scan",
-                src_ip      = src_ip,
-                severity    = "MEDIUM",
-                description = (
-                    f"Phát hiện quét {unique_port_count} cổng khác nhau "
-                    f"từ {src_ip} trong {PORT_SCAN_WINDOW} giây"
+                alert_type="Port Scan",
+                src_ip=src_ip,
+                severity="MEDIUM",
+                description=(
+                    f"Phát hiện quét cổng từ {src_ip} "
+                    f"trong {PORT_SCAN_WINDOW} giây "
+                    f"(Suricata phát hiện {count} alert)"
                 ),
-                extra = {
-                    "alert.unique_ports":  unique_port_count,
-                    "alert.threshold":     PORT_SCAN_THRESHOLD,
-                    "alert.time_window":   PORT_SCAN_WINDOW,
-                }
+                extra={
+                    "alert.scan_alerts": count,
+                    "alert.threshold": PORT_SCAN_THRESHOLD,
+                    "alert.time_window": PORT_SCAN_WINDOW,
+                },
             )
 
     except Exception as e:
         print(f"[ERROR] check_port_scan({src_ip}): {e}")
 
-    return None   # Explicit return
+    return None
 
 # Ham kiem tra tat ca rules
 def run_all_rules(es: Elasticsearch, active_ips: list[str]) -> list[dict]:

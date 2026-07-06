@@ -1,0 +1,21 @@
+# .Elasticsearch client
+# Phải khớp major version với Elasticsearch đang chạy (8.x)
+elasticsearch==8.13.4
+
+# HTTP requests 
+# Dùng trong alert_sender.py để gọi Telegram Bot API
+requests==2.31.0
+
+# .Environment variables 
+# Load TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID từ file .env
+python-dotenv==1.0.1
+
+#Timestamp parsing 
+# Dùng trong auth_parser.py và suricata_parser.py
+# Parse cả định dạng syslog "Jun 25 09:25:26" và ISO 8601
+python-dateutil==2.9.0.post0
+
+# Scheduled tasks
+# Dùng trong engine.py — chạy detection cycle mỗi 30 giây
+# Đơn giản hơn cron, chạy trong Python process
+schedule==1.2.2

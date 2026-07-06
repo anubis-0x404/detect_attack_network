@@ -3,7 +3,7 @@ import os
 import logging
 from datetime import datetime, timezone
 from elasticsearch import Elasticsearch
-
+from module4_detection.rule_based import create_alert
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config.settings import (
@@ -12,10 +12,8 @@ from config.settings import (
     BRUTE_FORCE_THRESHOLD,
     PORT_SCAN_THRESHOLD,
 )
-from module4_detection.rule_based import create_alert
 
 logger = logging.getLogger("SIEM-Correlation")
-
 correlation_state: dict = {}
 STATE_TTL_MINUTES = 20
 
@@ -73,7 +71,7 @@ def check_step_port_scan(es: Elasticsearch, src_ip: str, minutes: int) -> bool:
         if count > 0:
             return True
     except Exception as e:
-        logger.debug(f"Truy vấn signature scan cho {src_ip} gặp lỗi nhẹ (có thể do thiếu field rule.name): {e}")
+        logger.debug(f"Truy vấn signature scan cho {src_ip} gặp lỗi: {e}")
 
     port_query = {
         "query": {

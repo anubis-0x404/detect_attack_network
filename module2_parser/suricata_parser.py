@@ -42,7 +42,7 @@ def parse_line(line: str) -> dict | None:
         return None
 
     severity_num  = alert_info.get("severity", 4)
-    severity_name = SEVERITY_MAP.get(severity_num, "LOW")
+    severity_name = SEVERITY_MAP.get(severity_num, "INFO")
 
     return {
         "event_type":  "suricata_alert",
@@ -67,7 +67,7 @@ def parse_eve_json(filepath: str) -> list[dict]:
             for line_num, line in enumerate(f, start=1):
                 parsed = parse_line(line)
                 if parsed:
-                    parsed["line_number"] = line_num   # ghi đè default 0
+                    parsed["line_number"] = line_num   
                     results.append(parsed)
     except FileNotFoundError:
         print(f"[ERROR] Không tìm thấy file: {filepath}")

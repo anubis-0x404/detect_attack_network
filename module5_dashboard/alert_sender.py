@@ -37,7 +37,13 @@ def format_telegram_message(alert: dict) -> str:
     alert_type = html.escape(str(alert.get('alert.type', 'N/A')))
     src_ip     = html.escape(str(alert.get('source.ip', 'N/A')))
     desc       = html.escape(str(alert.get('alert.description', 'N/A')))
-    timestamp  = html.escape(str(alert.get('@timestamp', 'N/A')))
+    raw_ts = alert.get("@timestamp", "")
+    try:
+        dt_utc   = datetime.fromisoformat(raw_ts).replace(tzinfo=timezone.utc)
+        dt_local = dt_utc.astimezone()
+        timestamp = dt_local.strftime("%Y-%m-%d %H:%M:%S")
+    except Exception:
+        timestamp = raw_ts or "N/A"
 
     message = (
         f"{emoji} <b>SIEM ALERT — {severity}</b>\n\n"

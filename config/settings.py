@@ -11,10 +11,9 @@ _suri_cfg_path = os.path.join(_BASE, "config", "suricata.yaml")
 if os.path.exists(_suri_cfg_path):
     with open(_suri_cfg_path, "r") as f:
         _suri_cfg = yaml.safe_load(f)
-    # EVE_JSON_PATH = _suri_cfg["suricata"]["eve_json_path"]
-    SEVERITY_MAP = {int(k): v for k, v in _suri_cfg["severity_map"].items()}
+    SEVERITY_MAP = {int(k): v.upper() for k, v in _suri_cfg["severity_map"].items()}
 else:
-    SEVERITY_MAP = {1: "high", 2: "medium", 3: "low"}
+    SEVERITY_MAP = {1: "HIGH", 2: "MEDIUM", 3: "LOW", 4: "INFO"}
 
 # Cấu hình Elasticsearch
 ES_HOST = "http://localhost:9200"
