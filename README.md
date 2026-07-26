@@ -1,10 +1,13 @@
 🛡️ Mini SIEM — Hệ thống Giám sát và Phát hiện Tấn công Mạng
 
-![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)
-![Elasticsearch](https://img.shields.io/badge/Elasticsearch-8.x-005571?logo=elasticsearch)
-![Kibana](https://img.shields.io/badge/Kibana-8.x-E8478B?logo=kibana)
-![Suricata](https://img.shields.io/badge/Suricata-6.x-orange)
-![License](https://img.shields.io/badge/License-MIT-green)
+[![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)](https://www.python.org/)
+[![Elasticsearch](https://img.shields.io/badge/Elasticsearch-8.x-005571?logo=elasticsearch)](https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html)
+[![Kibana](https://img.shields.io/badge/Kibana-8.x-E8478B?logo=kibana)](https://www.elastic.co/guide/en/kibana/current/index.html)
+[![Suricata](https://img.shields.io/badge/Suricata-6.x-orange)](https://suricata.readthedocs.io/en/latest/)
+[![Rsyslog](https://img.shields.io/badge/Rsyslog-8.x-grey?logo=linux)](https://www.rsyslog.com/doc/index.html)
+[![Telegram](https://img.shields.io/badge/Telegram-Bot_API-2CA5E0?logo=telegram)](https://core.telegram.org/bots/api)
+[![License](https://img.shields.io/badge/License-MIT-green)](https://opensource.org/licenses/MIT)
+[![MITRE](https://img.shields.io/badge/MITRE-ATT%26CK-red)](https://attack.mitre.org/)
 
 ---
 
@@ -28,8 +31,8 @@ Hướng dẫn cài đặt
 #Bước 1 — Clone repository
 
 ```bash
-git clone https://github.com/anubis-0x404/Siem-project.git
-cd Siem-project
+git clone https://github.com/anubis-0x404/detect_attack_network.git
+cd detect_attack_network
 ```
 
 #Bước 2 — Cài thư viện Python
